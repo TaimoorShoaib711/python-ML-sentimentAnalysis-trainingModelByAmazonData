@@ -16,7 +16,7 @@ VECTORIZER_PATH = "text_vectorizer.pkl"
 INFO_PATH = "model_info.txt"
 
 
-# 🧹 Clean and simplify text
+# Clean and simplify text
 def preprocess_text(text_series):
     return text_series.apply(
         lambda x: x.lower().translate(str.maketrans('', '', string.punctuation)) if isinstance(x, str) else ""
@@ -47,7 +47,7 @@ def balance_dataset(df):
     df = pd.concat([df_positive, df_negative_upsampled, df_neutral_upsampled]).reset_index(drop=True)
     return df
 
-# 🚀 Train model and save it
+# Train model and save it
 def train_and_save_model(df):
     print("🧹 Preprocessing text...")
     df['Text'] = preprocess_text(df['Text'])
@@ -58,17 +58,17 @@ def train_and_save_model(df):
     X = df['Text']
     y = df['Sentiment']
 
-    print("📊 Splitting data...")
+    print(" Splitting data...")
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    print("🔠 Vectorizing text with TF-IDF...")
+    print(" Vectorizing text with TF-IDF...")
     vectorizer = TfidfVectorizer(max_features=10000, ngram_range=(1, 2))
     X_train_vec = vectorizer.fit_transform(X_train)
     X_test_vec = vectorizer.transform(X_test)
 
-    print("\n🚀 Training Logistic Regression model...\n")
+    print("\n Training Logistic Regression model...\n")
     model = LogisticRegression(max_iter=1000, n_jobs=-1)
     model.fit(X_train_vec, y_train)
 
@@ -86,11 +86,11 @@ def train_and_save_model(df):
     with open(INFO_PATH, "w") as f:
         f.write(str(len(df)))
 
-    print("\n💾 Model and vectorizer saved successfully!")
+    print("\n Model and vectorizer saved successfully!")
     return model, vectorizer
 
 
-# 🔁 Load model or retrain if data changed
+#  Load model or retrain if data changed
 def load_or_train(df):
     retrain = False
     current_rows = len(df)
@@ -126,14 +126,14 @@ def get_sentiment_label(label):
         return "Positive 😊"
 
 
-# 🧾 Main
+# Main
 def main():
     df = pd.read_csv("amazonReviews/Reviews.csv", nrows=10000)
     print(f" Loaded {len(df)} rows.")
 
     model, vectorizer = load_or_train(df)
 
-    print("\n🔍 Making example predictions...\n")
+    print("\n Making example predictions...\n")
     samples = [
         "This product was absolutely amazing, I loved it!",
         "Terrible quality, waste of money.",
@@ -153,7 +153,7 @@ def main():
 
     for text, pred, conf in zip(samples, preds, confidences):
         sentiment = get_sentiment_label(pred)
-        print(f"📝 Review: {text}\n➡️ Sentiment: {sentiment}\n📊 Confidence: {conf * 100:.2f}%\n")
+        print(f"Review: {text}\n Sentiment: {sentiment}\n Confidence: {conf * 100:.2f}%\n")
 
 
 if __name__ == "__main__":
