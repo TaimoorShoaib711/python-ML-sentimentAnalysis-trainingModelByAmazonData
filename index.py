@@ -49,7 +49,7 @@ def balance_dataset(df):
 
 # Train model and save it
 def train_and_save_model(df):
-    print("🧹 Preprocessing text...")
+    print(" Preprocessing text...")
     df['Text'] = preprocess_text(df['Text'])
     df = balance_dataset(df)
 
